@@ -85,7 +85,8 @@ as one part of the entire proceedings, and not as an independent document.
 Please do not revise any of the current designations.
 \fi
 \section{General Game Model}
-In this section we define a general game model to serve as the bais for the rest of the games.
+In this section we define a general game model to serve as the basis for the rest of the game models.
+
 \textbf{Definition 1}: We will denote an $n$ player game $$\Gamma_n = (\mathcal{P}, S, u)$$
 \begin{enumerate}
 \item $\mathcal{P}$ is the set of $|\mathcal{P}| = n$ players
@@ -117,25 +118,54 @@ Now we can write $\vec{s} \in S \implies \vec{s} = \langle \vec{s_i}, \vec{s}_{-
 \textbf{Definition 8}: Nash Equilibrium
 \begin{enumerate}
 
-\item A pure strategy profile $\vec{s} \in S$ is a \textbf{Nash equilibrium} if and only if $$u_i(\vec{s}_i, \vec{s}_{-i}) \geq u_i(\vec{s'}_i, \vec{s}_{-i}) \forall{\vec{s'}_i \in S_i}$$
-\item A mixed strategy profile $\vec{\sigma_i} \in \Delta S_i$ is a \textbf{mixed Nash equilibrium} if and only if $$u_i(\vec{\sigma}_i, \vec{\sigma}_{-i}) \geq u_i(\vec{\sigma'}_i, \vec{\sigma}_{-i}) \forall{\vec{\sigma'}_i \in \Delta S_i}$$
+\item A pure strategy profile $\vec{s} \in S$ is a \textbf{Nash equilibrium} if and only if $$u_i(\vec{s}_i, \vec{s}_{-i}) \geq u_i(\vec{s'}_i, \vec{s}_{-i}) \forall{\vec{s'}_i \in S_i}$$ for each player $i$
+\item A mixed strategy profile $\vec{\sigma_i} \in \Delta S_i$ is a \textbf{mixed-strategy Nash equilibrium} if and only if $$u_i(\vec{\sigma}_i, \vec{\sigma}_{-i}) \geq u_i(\vec{s'}_i, \vec{\sigma}_{-i}) \forall{\vec{s'}_i \in S_i}$$ for each player $i$.
 
 \end{enumerate}
 
 \section{Static Colonel Blotto Game Model}
 
-In this section we write the model for a game where an attacker and defender compete for control of nodes in a network. 
+In this section we write the model for a game where an attacker and defender compete for control of nodes in a network. Each player has a resource capacity \mathcal{R} that is distributed over the nodes in the network. The player that allocates the most resources to a particular node wins it as in the Colonel Blotto Game. In addition, the defender designates one of the nodes as a honeypot. The honeypot node has a self defense capacity.
 
-\textbf{Definition 9}: We will denote an $2$ player game $$\Gamma_2 = (\mathcal{P}, S, u, \mathcal{N}, \tau)$$
+\textbf{Definition 9}: We will denote an $2$ player game $$\Gamma_2 = (\mathcal{P}, S, u, \mathcal{N}, \mathcal{R}, \tau)$$
 \begin{enumerate}
 \item $\mathcal{P}$ is the set of $|\mathcal{P}| = 2$ players
 \item The strategy profile of the game $$S = \displaystyle \prod_{i = 1}^2 S_i = S_1 \times S_2$$ where $S_i$ is the strategy space of player $i$.
 \item $u_i$ is the utility function for each player $i$, $$u_i \mathpunct{:} S \to \mathbb{R} \implies u = \langle u_1, u_2 \rangle$$
 \item $\mathcal{N}$ is the network
+\item $\mathcal{R}$ is the resource capacity
 \item $\tau$ is the network topology
 \end{enumerate}
-\section{Reinforcement Learning Game Model}
 
+
+\textbf{Definition 10}: Player strategies
+Let $|\mathcal{V}|$ denote the order of $\mathcal{N}$.
+\begin{enumerate}
+\item A defender strategy $\vec{s}_1 \in S_1$ is a vector in $\mathbb{R}^{|\mathcal{V}| + 1}$
+\begin{enumerate}
+\item $\vec{s}_1 = \langle s_1^0, s_1^1, s_1^2, \ldots, s_1^{|\mathcal{V}|} \rangle$
+\item $s_1^0$ stores the index of the honeypot node.
+\item $\displaystyle \sum_{i = 1}^{|\mathcal{V}|} s_1^i = \mathcal{R}$
+\end{enumerate}
+\item A attacker strategy $\vec{s}_2 \in S_2$ is a vector in $\mathbb{R}^{|\mathcal{V}|}$
+\begin{enumerate}
+\item $\vec{s}_2 = \langle s_2^1, s_2^2, \ldots, s_2^{|\mathcal{V}|} \rangle$
+\item $\displaystyle \sum_{i = 1}^{|\mathcal{V}|} s_2^i = \mathcal{R}$
+\end{enumerate}
+\end{enumerate}
+
+
+\section{Reinforcement Learning Game Model}
+In this section we formulate a game model to be used to find the optimal policy for a player using a reinforcement learning approach.
+
+\textbf{Definition 11}: We will denote the game by $$MDP = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R})$$
+\begin{enumerate}
+\item $\mathcal{S}$ is the set of states
+\item $\mathcal{A}$ is the set of actions
+\item $\mathcal{P}$ is the transition model
+\item $\mathcal{R}$ is the reward function
+
+\end{enumerate}
 
 \if 0
 Before you begin to format your paper, first write and save the content as a 
