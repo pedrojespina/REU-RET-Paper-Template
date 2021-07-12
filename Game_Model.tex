@@ -113,7 +113,7 @@ Now we can write $\vec{s} \in S \implies \vec{s} = \langle \vec{s_i}, \vec{s}_{-
 \textbf{Definition 7}: The payoff function and mixed strategies
 \begin{enumerate}
 \item $u_i(\vec{s_i}, \vec{\sigma}_{-i}) = \displaystyle\sum_{\vec{s}_{-i} \in S_{-i}}\sigma_{-i}(\vec{s}_{-i})u_i(\vec{s}_i, \vec{s}_{-i})$
-\item $u_i(\vec{\sigma_i}, \vec{\sigma}_{-i})) = \displaystyle\sum_{s_i \in S_i}\sum_{s_{-i} \in S_{-i}}\sigma_i(s_i)\sigma_{-i}(s_{-i})u_i(s_i, s_{-i})$
+\item $u_i(\vec{\sigma_i}, \vec{\sigma}_{-i}) = \displaystyle\sum_{s_i \in S_i}\sum_{s_{-i} \in S_{-i}}\sigma_i(s_i)\sigma_{-i}(s_{-i})u_i(s_i, s_{-i})$
 \end{enumerate}
 \textbf{Definition 8}: Nash Equilibrium
 \begin{enumerate}
@@ -125,7 +125,7 @@ Now we can write $\vec{s} \in S \implies \vec{s} = \langle \vec{s_i}, \vec{s}_{-
 
 \section{Static Colonel Blotto Game Model}
 
-In this section we write the model for a game where an attacker and defender compete for control of nodes in a network. Each player has a resource capacity \mathcal{R} that is distributed over the nodes in the network. The player that allocates the most resources to a particular node wins it as in the Colonel Blotto Game. In addition, the defender designates one of the nodes as a honeypot. The honeypot node has a self defense capacity.
+In this section we write the model for a game where an attacker and defender compete for control of nodes in a network. Each player has a resource capacity $\mathcal{R}$ that is distributed over the nodes in the network. The player that allocates the most resources to a particular node wins it as in the Colonel Blotto Game. In addition, the defender designates one of the nodes as a honeypot. The honeypot node has a self defense capacity.
 
 \textbf{Definition 9}: We will denote an $2$ player game $$\Gamma_2 = (\mathcal{P}, S, u, \mathcal{N}, \mathcal{R}, \tau)$$
 \begin{enumerate}
