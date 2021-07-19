@@ -90,12 +90,12 @@ In this section we define a general game model to serve as the basis for the res
 \textbf{Definition 1}: We will denote an $n$ player game $$\Gamma_n = (\mathcal{P}, S, u)$$
 \begin{enumerate}
 \item $\mathcal{P}$ is the set of $|\mathcal{P}| = n$ players
-\item S is the strategy profile of the game $$S = S_1 \times S_2 $$ where $S_i$ is the strategy space of player $i$.
+\item S is the strategy profile of the game $$S = \displaystyle \prod_{i=1}^n S_i = S_1 \times S_2 \times \ldots S_n $$ where $S_i$ is the strategy space of player $i$.
 \item For each player $i$, we define the utility function $$u_i \mathpunct{:} S \to \mathbb{R} \implies u = \langle u_1, u_2, \ldots, u_n \rangle$$
 
 \end{enumerate}
 
-\textbf{Definition 2}: A strategy profile $\vec{s} \in S$ is a vector $$\vec{s} = \langle\vec{s_1}, \vec{s_1}, \ldots, \vec{s_n}\rangle$$ where $\vec{s_i}$ is the strategy of player $i$.
+\textbf{Definition 2}: A strategy profile $\vec{s} \in S$ is a vector $$\vec{s} = \langle\vec{s_1}, \vec{s_2}, \ldots, \vec{s_n}\rangle$$ where $\vec{s_i}$ is the strategy of player $i$.
 
 \textbf{Definition 3}: Each player strategies is a vector $$\vec{s_i} = \langle s_i^1, s_i^2, \ldots, s_i^{|S_i|}\rangle$$ 
 \par Given a player $i$, sometimes we need to specify the strategies chosen by the players other than player $i$. 
@@ -106,7 +106,7 @@ Now we can write $\vec{s} \in S \implies \vec{s} = \langle \vec{s_i}, \vec{s}_{-
 
 \par A mixed strategy for a player is an act of selecting a strategy according to a probability distribution. Let $\Delta S_i$ denote the set of all probability distributions over the strategies of player $i$.
 
-\textbf{Definition 5}: A mixed strategy $\vec{\sigma}_i \in \Delta S_i$ is a vector $$\vec{\sigma}_i = \langle\sigma_i^1, \sigma_i^2, \ldots, \sigma_i^{|S_i|}\rangle$$ where $\sigma_i^j$ is the probability that player $i$ will play strategy $s_j$.
+\textbf{Definition 5}: A mixed strategy $\vec{\sigma}_i \in \Delta S_i$ is a vector $$\vec{\sigma}_i = \langle\sigma_i^1, \sigma_i^2, \ldots, \sigma_i^{|S_i|}\rangle$$ where $\sigma_i^j$ is the probability that player $i$ will play strategy $\vec{s}_j$.
 
 \textbf{Definition 6}: A deleted mixed strategy $\vec{\sigma}_{-i} \in \Delta S_{-i}$ is a vector $$\vec{\sigma}_{-i} = \langle \vec{\sigma_1}, \vec{\sigma_2}, \ldots, \vec{\sigma}_{i-1}, \hat{\sigma}_{i}, \vec{\sigma}_{i+1} \ldots, \vec{\sigma_n}\rangle$$ $\hat{\sigma}_{i}$ indicates that the mixed strategy for player $i$ is missing.
 
@@ -158,14 +158,50 @@ Let $|\mathcal{V}|$ denote the order of $\mathcal{N}$.
 \section{Reinforcement Learning Game Model}
 In this section we formulate a game model to be used to find the optimal policy for a player using a reinforcement learning approach.
 
-\textbf{Definition 11}: We will denote the game by $$MDP = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R})$$
+\subsection{Single Agent Reinforcement Learning}
+
+\textbf{Definition 11}: A Markov Decision Process is defined by a tuple $$MDP = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$$
 \begin{enumerate}
 \item $\mathcal{S}$ is the set of states
 \item $\mathcal{A}$ is the set of actions
-\item $\mathcal{P}$ is the transition model
+\item $\mathcal{P}$ is the transition model $$\mathcal{P} \mathpunct{:} \mathcal{S} \times \mathcal{A} \to \Delta \mathcal{S}$$ where $\Delta \mathcal{S}$ denotes the set of all probability distributions over the state space.
 \item $\mathcal{R}$ is the reward function
+$$\mathcal{R} \mathpunct{:} \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}$$
+\item $\gamma \in [0, 1)$ is the discount factor that trades off the instantaneous and
+future rewards.
 
 \end{enumerate}
+
+\par For \mathbf{fully observable} system states $\mathcal{S}$. At each time step $t$, the agent chooses an action $a_t$ in system state $s_t$ causing the system to transition to state $s_{t+1} \sim \mathcal{P}(s_t, a_t)$. The agent receives a reward $\mathcal{R}(s_t, a_t, s_{t+1})$. The goal of solving the $MDP$ is to find a policy $$\pi \mathpunct{:} \mathcal{S} \to \Delta \mathcal{A}$$ that maximized the expected value of the discounted accumulated reward $$\mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}(s_t, a_t, s_{t+1})\Big| a_t \sim \pi(s_t)\Big]$$
+
+\par Given a policy function $\pi$ we can define an action value function: $$Q_{\pi}(s, a) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}(s_t, a_t, s_{t+1})\Big| a_t \sim \pi(s_t), a_0 = a, s_0 = s\Big]$$ and the state value function:
+$$V_{\pi}(s) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}(s_t, a_t, s_{t+1})\Big| a_t \sim \pi(s_t), s_0 = s\Big]$$ The functions corresponding to the optimal policy $\pi^*$ are referred to as the optimal Q-function $Q_{\pi^*}$ and the optimal state value function $V_{\pi^*}$, respectively. When we don't have complete knowledge of the model, Reinforcement learning can be used to find such an optimal policy. The RL agent learns the policy from experiences collected by interacting with the environment. 
+
+\par If the details about the underlying model are known, the optimal policy can be obtained by using the value iteration and policy iteration algorithms.  
+
+\section{Multi-Agent Reinforcement Learning}
+
+Markov games (MG), also known as stochastic games, are a generalization of MDPs to account for multiple interacting agents.
+
+\textbf{Definition 12}: A Markov or Stochastic Game is defined by a tuple $$MG = (\mathcal{N}, \mathcal{S}, \{\mathcal{A}^i\}_{i\in\mathcal{N}} , \mathcal{P}, \{\mathcal{R}^i\}_{i\in\mathcal{N}}, \gamma)$$
+\begin{enumerate}
+\item $\mathcal{S}$ is the set of system states.
+\item $\mathcal{A}^i$ is the set of actions of player $i$.
+\item $\mathcal{P}$ is the transition model $$\mathcal{P} \mathpunct{:} \mathcal{S} \times \mathcal{A} \to \Delta \mathcal{S}$$ where $\Delta \mathcal{S}$ denotes the set of all probability distributions over the state space.
+\item $\mathcal{R}^i$ is the reward function of player $i$.
+$$\mathcal{R}^i \mathpunct{:} \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}$$
+\item $\gamma \in [0, 1)$ is the discount factor that trades off the instantaneous and
+future rewards.
+
+\end{enumerate}
+
+For \mathbf{fully observable} system states $\mathcal{S}$. At each time step $t$, Each agent $i \in \mathcal{N}$ chooses an action $a^i_t$ in system state $s_t$ causing the system to transition to state $s_{t+1}$. Each agent receives a reward $\mathcal{R}^i(s_t, a_t, s_{t+1})$. The goal of agent $i\in\mathcal{N}$ is to find a policy $$\pi^i \mathpunct{:} \mathcal{S} \to \Delta \mathcal{A}^i$$ that maximized the expected value of the discounted accumulated reward $$\mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t)\Big]$$. We can define the joint policy function $$\pi \mathpunct{:=} \prod_{i\in \mathcal{N}}\pi^i$$ It is useful to think of $\pi$ as $$\pi = \langle \pi^i, \pi^{-i} \rangle$$ where $−i$ represents the indices of all agents in $\mathcal{N}$ except agent $i$.
+
+\par Now we can define an action value function for each player $i \in \mathcal{N}$ : $$Q^i_{\pi}(s, a) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t), a_0 = a, s_0 = s\Big]$$ and the state value function for each player $i \in \mathcal{N}$:
+$$V^i_{\pi}(s) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t), s_0 = s\Big]$$ 
+Since now the optimal performance of an agent is controlled by not only his own policy but also the policies of the remaining players. The most common solution concept is the concept of a Nash equilibrium.
+
+\textbf{Definition 13}: A Nash Equilibrium of a Markov Game is a joint policy $$ \pi^* = \langle \pi^{1*}, \pi^{2*}, \ldots, \pi^{N*} \rangle $$ such that $\forall s \in \mathcal{S}$ and $\forall i \in \mathcal{N}$ $$V^i_{\langle \pi^{i*}, \pi^{-i*} \rangle}(s) \geq V^i_{\langle \pi^{i}, \pi^{-i*} \rangle}(s)$$ for all $\pi^i$.
 
 \if 0
 Before you begin to format your paper, first write and save the content as a 
