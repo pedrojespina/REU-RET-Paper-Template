@@ -179,7 +179,7 @@ $$V_{\pi}(s) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}(s_t,
 
 \par If the details about the underlying model are known, the optimal policy can be obtained by using the value iteration and policy iteration algorithms.  
 
-\section{Multi-Agent Reinforcement Learning}
+\subsection{Multi-Agent Reinforcement Learning}
 
 Markov games (MG), also known as stochastic games, are a generalization of MDPs to account for multiple interacting agents.
 
@@ -195,13 +195,56 @@ future rewards.
 
 \end{enumerate}
 
-For \mathbf{fully observable} system states $\mathcal{S}$. At each time step $t$, Each agent $i \in \mathcal{N}$ chooses an action $a^i_t$ in system state $s_t$ causing the system to transition to state $s_{t+1}$. Each agent receives a reward $\mathcal{R}^i(s_t, a_t, s_{t+1})$. The goal of agent $i\in\mathcal{N}$ is to find a policy $$\pi^i \mathpunct{:} \mathcal{S} \to \Delta \mathcal{A}^i$$ that maximized the expected value of the discounted accumulated reward $$\mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t)\Big]$$. We can define the joint policy function $$\pi \mathpunct{:=} \prod_{i\in \mathcal{N}}\pi^i$$ It is useful to think of $\pi$ as $$\pi = \langle \pi^i, \pi^{-i} \rangle$$ where $−i$ represents the indices of all agents in $\mathcal{N}$ except agent $i$.
+For \mathbf{fully observable} system states $\mathcal{S}$. At each time step $t$, Each agent $i \in \mathcal{N}$ chooses an action $a^i_t$ in system state $s_t$ causing the system to transition to state $s_{t+1}$. Each agent receives a reward $\mathcal{R}^i(s_t, a_t, s_{t+1})$. The goal of agent $i\in\mathcal{N}$ is to find a policy $$\pi^i \mathpunct{:} \mathcal{S} \to \Delta \mathcal{A}^i$$ that maximized the expected value of the discounted accumulated reward $$\mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1})\Big| a^i_t \sim \pi^i(s_t)\Big]$$. We can define the joint policy function $$\pi \mathpunct{:=} \prod_{i\in \mathcal{N}}\pi^i$$ It is useful to think of $\pi$ as $$\pi = \langle \pi^i, \pi^{-i} \rangle$$ where $−i$ represents the indices of all agents in $\mathcal{N}$ except agent $i$.
 
 \par Now we can define an action value function for each player $i \in \mathcal{N}$ : $$Q^i_{\pi}(s, a) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t), a_0 = a, s_0 = s\Big]$$ and the state value function for each player $i \in \mathcal{N}$:
 $$V^i_{\pi}(s) = \mathbb{E}\Big[\displaytyle\sum_{t\geq 0}\gamma^t\mathcal{R}^i(s_t, a_t, s_{t+1}))\Big| a^i_t \sim \pi^i(s_t), s_0 = s\Big]$$ 
 Since now the optimal performance of an agent is controlled by not only his own policy but also the policies of the remaining players. The most common solution concept is the concept of a Nash equilibrium.
 
 \textbf{Definition 13}: A Nash Equilibrium of a Markov Game is a joint policy $$ \pi^* = \langle \pi^{1*}, \pi^{2*}, \ldots, \pi^{N*} \rangle $$ such that $\forall s \in \mathcal{S}$ and $\forall i \in \mathcal{N}$ $$V^i_{\langle \pi^{i*}, \pi^{-i*} \rangle}(s) \geq V^i_{\langle \pi^{i}, \pi^{-i*} \rangle}(s)$$ for all $\pi^i$.
+
+\section{Our Game Model}
+
+In this section we describe the model for our game where an attacker and defender compete for control of nodes in a network. Each player has a total resource capacity $\mathcal{R}$ that is distributed over the nodes in the network. The resource allocation is done in discrete integer units. The player that allocates the most resources to a particular node wins it, as in the Colonel Blotto Game. In addition, the defender can add a separate honeypot node or designate a honeypot node in the original topology by reinforcing it.
+
+\textbf{Definition 1}: We will denote an $2$ player game $$\Gamma_2 = (S, \boldsymbol{u}, \mathcal{R}, \mathcal{N}, \tau)$$
+\begin{enumerate}
+\item The strategy profile of the game $$S = \displaystyle \prod_{i = 1}^2 S_i = S_1 \times S_2$$ where $S_i$ is the strategy space of player $i$.
+\item $u_i$ is the utility function for each player $i$, $$u_i \mathpunct{:} S \to \mathbb{R} \implies \boldsymbol{u} = \langle u_1, u_2 \rangle$$
+Our game is a zero sum game where $u_2 = -u_1$. 
+\item $\mathcal{N}$ is the network
+\item $\mathcal{R}$ is the resource capacity
+\item $\tau$ is the network topology
+\end{enumerate}
+
+
+\textbf{Definition 2}: Player strategies \\
+Let $|\mathcal{V}|$ denote the order of $\mathcal{N}$. \\
+Each player strategy is a vector $\boldsymbol{s_i} \in S_i$ is a vector in $\mathbb{Z}^{|\mathcal{V}| + 1}$
+\begin{enumerate}
+\item $\boldsymbol{s_i} = \langle s_i^1, s_i^2, \ldots, s_i^{|\mathcal{V}|} \rangle$
+\item $\displaystyle \sum_{k = 1}^{|\mathcal{V}|} s_i^k = \mathcal{R}$
+\end{enumerate}
+\end{enumerate}
+
+\textbf{Definition 3}: Pure strategy profiles \\
+A strategy profile $\boldsymbol{s} \in S$ is a vector $$\boldsymbol{s} = \langle\boldsymbol{s_1}, \boldsymbol{s_2}\rangle$$ where $\boldsymbol{s_i}$ is the strategy of player $i$.
+
+\par A mixed strategy for a player is an act of selecting a strategy according to a probability distribution. Let $\Delta S_i$ denote the set of all probability distributions over the strategies of player $i$.
+
+\textbf{Definition 4}: A mixed strategy $\boldsymbol{\sigma_i} \in \Delta S_i$ is a vector $$\boldsymbol{\sigma_i} = \langle\sigma_i^1, \sigma_i^2, \ldots, \sigma_i^{|S_i|}\rangle$$ where $\sigma_i^j = \boldsymbol{\sigma_i}(\boldsymbol{s_j})$ is the probability that player $i$ will play strategy $\boldsymbol{s_j}$.
+
+\textbf{Definition 5}: The payoff function and mixed strategies
+$$ u_i(\boldsymbol{\sigma_1}, \boldsymbol{\sigma_2}) = \displaystyle\sum_{\boldsymbol{s_1} \in S_1}\sum_{\boldsymbol{s_{2}} \in S_{2}}\boldsymbol{\sigma_1}(\boldsymbol{s_1)}u_i(\boldsymbol{s_1}, \boldsymbol{s_{2}})\boldsymbol{\sigma_{2}}(\boldsymbol{s_{2})}$$
+
+
+\textbf{Definition 6}: Nash Equilibrium
+\begin{enumerate}
+
+\item A pure strategy profile $\boldsymbol{s}^* = \langle\boldsymbol{s_1}^*, \boldsymbol{s_2}^*\rangle \in S$ is a \textbf{Nash equilibrium} if and only if $$u_1(\boldsymbol{s_1}, \boldsymbol{s_{2}^*}) \leq u_1(\boldsymbol{s}_1^*, \boldsymbol{s_2^*}) \leq u_1(\boldsymbol{s_1^*}, \boldsymbol{s_2}) $$
+\item A mixed strategy profile $\boldsymbol{\sigma^*} = \langle\boldsymbol{\sigma_1^*}, \boldsymbol{\sigma_2}^*\rangle \in \Delta S_i$ is a \textbf{mixed-strategy Nash equilibrium} if and only if $$u_1(\boldsymbol{\sigma_1}, \boldsymbol{\sigma_2^*}) \leq u_1(\boldsymbol{\sigma_1^*}, \boldsymbol{\sigma_2^*}) \leq u_1(\boldsymbol{\sigma_1^*}, \boldsymbol{\sigma_2}) $$
+
+\end{enumerate}
 
 \if 0
 Before you begin to format your paper, first write and save the content as a 
@@ -406,4 +449,7 @@ citation first, followed by the original foreign-language citation \cite{b6}.
 \color{red}
 IEEE conference templates contain guidance text for composing and formatting conference papers. Please ensure that all template text is removed from your conference paper prior to submission to the conference. Failure to remove the template text from your paper may result in your paper not being published.
 \fi
+
+
+
 \end{document}
